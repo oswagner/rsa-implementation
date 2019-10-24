@@ -42,11 +42,10 @@ def main(bits_size):
     print("\n\n\n\n")
 
     message = input("Mensagem: ")
-    message = int(message)
     encrypt_message = encrypt(message, public_key)
     print("\n")
     print("Encrypt message")
-    print(encrypt_message)
+    print(''.join(map(lambda x: str(x), encrypt_message)))
 
     print("\n")
     print("Decrypt message")
