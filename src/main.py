@@ -26,8 +26,7 @@ def main(bits_size):
 
     # evaluate modular inverse of e
     founded_inverse = True
-    e = generate_e(phi_n)
-    gcd, a, b = extended_euclidean(e, phi_n)
+    e, gcd, a, b = 0, 0, 0, 0
     while founded_inverse:
         e = generate_e(phi_n)
         gcd, a, b = extended_euclidean(e, phi_n)
