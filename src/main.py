@@ -1,7 +1,7 @@
 import sys
 from utils.primes import get_primes
 from utils.encrypter import encrypt, decrypt
-from utils.euclidean import generate_e, evaluate_inverse, inverse_euclidean
+from utils.euclidean import generate_e, extended_euclidean
 
 
 def _generate_keys(e, d, n):
@@ -11,28 +11,24 @@ def _generate_keys(e, d, n):
 def main(bits_size):
     p, q = get_primes(bits_size)
 
-    print("primes")
-    print(p)
-    print("\n")
-    print(q)
-
-    print("\n")
-    print("phi_n")
     phi_n = (p - 1) * (q - 1)
-    print(phi_n)
 
-    print("\n")
-    print("mod n")
     n = p * q
-    print(n)
-    e = generate_e(phi_n, bits_size)
-
+    print("Generating keys...")
     print("\n")
-    print("inverse of e in mod phi_n")
-    d = inverse_euclidean(e, phi_n)
-    print(d)
 
-    public_key, private_key = _generate_keys(e, d, n)
+    founded_inverse = True
+    e = generate_e(phi_n)
+    gcd, a, b = extended_euclidean(e, phi_n)
+    while founded_inverse:
+        e = generate_e(phi_n)
+        gcd, a, b = extended_euclidean(e, phi_n)
+        if (gcd == 1 and (gcd == (a * e) + (phi_n * b))):
+            if(a*e % phi_n == 1 and 0 <= a <= n):
+                founded_inverse = False
+
+    public_key, private_key = _generate_keys(
+        e, a, n)  # a is modular inverse of e
 
     print("\n")
     print("============================================ BEGIN PUBLIC KEY ============================================")
@@ -46,16 +42,19 @@ def main(bits_size):
     print("\n\n\n\n")
 
     message = input("Mensagem: ")
+    message = int(message)
     encrypt_message = encrypt(message, public_key)
     print("\n")
     print("Encrypt message")
-    print(''.join(map(lambda x: str(x), encrypt_message)))
+    print(encrypt_message)
 
     print("\n")
     print("Decrypt message")
     decrypt_message = decrypt(encrypt_message, private_key)
     print(decrypt_message)
+    print("\n")
 
 
 if __name__ == "__main__":
+    sys.setrecursionlimit(2000)
     main(int(sys.argv[1]))
