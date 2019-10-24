@@ -4,19 +4,27 @@ from utils.encrypter import encrypt, decrypt
 from utils.euclidean import generate_e, extended_euclidean
 
 
+# generate public and private keys
+
 def _generate_keys(e, d, n):
     return((e, n), (d, n))
 
 
 def main(bits_size):
+
+    # find primes
     p, q = get_primes(bits_size)
 
+    # evaluate totiente
     phi_n = (p - 1) * (q - 1)
 
+    # evaluate modulus
     n = p * q
+
     print("Generating keys...")
     print("\n")
 
+    # evaluate modular inverse of e
     founded_inverse = True
     e = generate_e(phi_n)
     gcd, a, b = extended_euclidean(e, phi_n)
@@ -27,8 +35,7 @@ def main(bits_size):
             if(a*e % phi_n == 1 and 0 <= a <= n):
                 founded_inverse = False
 
-    public_key, private_key = _generate_keys(
-        e, a, n)  # a is modular inverse of e
+    public_key, private_key = _generate_keys(e, a, n)
 
     print("\n")
     print("============================================ BEGIN PUBLIC KEY ============================================")
@@ -41,7 +48,7 @@ def main(bits_size):
 
     print("\n\n\n\n")
 
-    message = input("Mensagem: ")
+    message = input("Message input: ")
     encrypt_message = encrypt(message, public_key)
     print("\n")
     print("Encrypt message")
