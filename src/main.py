@@ -10,8 +10,7 @@ def _generate_keys(e, d, n):
     return((e, n), (d, n))
 
 
-def main(bits_size):
-
+def generate_key_pair(bits_size):
     # find primes
     p, q = get_primes(bits_size)
 
@@ -21,7 +20,6 @@ def main(bits_size):
     # evaluate modulus
     n = p * q
 
-    print("Generating keys...")
     print("\n")
 
     # evaluate modular inverse of e
@@ -44,22 +42,36 @@ def main(bits_size):
     print("============================================ BEGIN PRIVATE KEY ============================================")
     print(private_key)
     print("============================================ END PRIVATE KEY ============================================")
-
-    print("\n\n\n\n")
-
-    message = input("Message input: ")
-    encrypt_message = encrypt(message, public_key)
-    print("\n")
-    print("Encrypt message")
-    print(''.join(map(lambda x: str(x), encrypt_message)))
-
-    print("\n")
-    print("Decrypt message")
-    decrypt_message = decrypt(encrypt_message, private_key)
-    print(decrypt_message)
-    print("\n")
+    return public_key, private_key
 
 
 if __name__ == "__main__":
     sys.setrecursionlimit(2000)
-    main(int(sys.argv[1]))
+    print("which option")
+    print("1 - Generate keypair")
+    print("2 - Encrypt a message")
+    print("3 - Decrypt a message")
+    option = int(input())
+    while option not in [1, 2, 3]:
+        print("Invalid option")
+        option = int(input())
+
+    if(option == 1):
+        print("Generate keypair")
+        bits_size = int(input("Enter key size in bits: "))
+        print("Generating keys...")
+        generate_key_pair(bits_size)
+
+    if (option == 2):
+        print("Encrypt a message")
+        message = input("Enter the message: ")
+        public_key = input("Enter the public key: ")
+
+        encrypt(message, public_key)
+
+    if(option == 3):
+        print("Decrypt a message")
+        message = input("Enter the cipher message: ")
+        private_key = input("Enter the private key: ")
+
+        decrypt(message, private_key)
