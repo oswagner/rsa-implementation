@@ -48,13 +48,13 @@ def generate_key_pair(bits_size):
     print("\n")
     print("-----BEGIN RSA PUBLIC KEY-----")
     encoded_public_key = base64.b64encode(public_key)
-    print(encoded_public_key)
+    print(encoded_public_key.decode())
     print("-----END RSA PUBLIC KEY-----")
     print("\n\n")
 
     print("-----BEGIN RSA PRIVATE KEY-----")
     encoded_private_key = base64.b64encode(private_key)
-    print(encoded_private_key)
+    print(encoded_private_key.decode())
     print("-----END RSA PRIVATE KEY-----")
 
 
