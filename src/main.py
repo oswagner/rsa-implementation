@@ -1,7 +1,10 @@
 import sys
+import base64
 from utils.primes import get_primes
 from utils.encrypter import encrypt, decrypt
 from utils.euclidean import generate_e, extended_euclidean
+from utils.key_generator import decode_private_key, decode_public_key
+from utils.key_generator import generate_public_key, generate_private_key
 
 
 # generate public and private keys
@@ -32,17 +35,27 @@ def generate_key_pair(bits_size):
             if(a*e % phi_n == 1 and 0 <= a <= n):
                 founded_inverse = False
 
-    public_key, private_key = _generate_keys(e, a, n)
+    # d mod (p - 1).
+    exp1 = a % (p - 1)
+    # d mod (q - 1).
+    exp2 = a % (q-1)
+    # q^(-1) mod p.
+    coef = (q ^ -1) % p
+
+    public_key = generate_public_key(e, n)
+    private_key = generate_private_key(e, n, a, p, q, exp1, exp2, coef)
 
     print("\n")
-    print("============================================ BEGIN PUBLIC KEY ============================================")
-    print(public_key)
-    print("============================================ END PUBLIC KEY ============================================")
+    print("-----BEGIN RSA PUBLIC KEY-----")
+    encoded_public_key = base64.b64encode(public_key)
+    print(encoded_public_key)
+    print("-----END RSA PUBLIC KEY-----")
     print("\n\n")
-    print("============================================ BEGIN PRIVATE KEY ============================================")
-    print(private_key)
-    print("============================================ END PRIVATE KEY ============================================")
-    return public_key, private_key
+
+    print("-----BEGIN RSA PRIVATE KEY-----")
+    encoded_private_key = base64.b64encode(private_key)
+    print(encoded_private_key)
+    print("-----END RSA PRIVATE KEY-----")
 
 
 if __name__ == "__main__":
@@ -63,15 +76,20 @@ if __name__ == "__main__":
         generate_key_pair(bits_size)
 
     if (option == 2):
-        print("Encrypt a message")
+        print("Encrypt a message...")
         message = input("Enter the message: ")
         public_key = input("Enter the public key: ")
+        decode_key = decode_public_key(public_key)
 
-        encrypt(message, public_key)
+        encrypt_message = encrypt(message, decode_key)
+        print(encrypt_message)
 
     if(option == 3):
         print("Decrypt a message")
         message = input("Enter the cipher message: ")
         private_key = input("Enter the private key: ")
 
-        decrypt(message, private_key)
+        decode_key = decode_private_key(private_key)
+
+        decoded_message = decrypt(int(message), decode_key)
+        print("Message: ", decoded_message)
