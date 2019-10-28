@@ -5,12 +5,12 @@
 
 
 def encrypt(message, public_key):
-    e, n = public_key
-    cipher_text = [pow(ord(char), e, n) for char in message]
+    e, n = public_key['modulus'], public_key['publicExponent']
+    cipher_text = [((ord(char)**e) % n) for char in message]
     return cipher_text
 
 
 def decrypt(message, private_key):
-    d, n = private_key
-    plain = [chr(pow(char, d, n)) for char in message]
+    d, n = private_key['modulus'], private_key['privateExponent']
+    plain = [chr(((char**d) % n)) for char in message]
     return ''.join(plain)
